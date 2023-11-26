@@ -7,14 +7,13 @@ const Bookings = () => {
     const { user } = useContext(AuthContext)
     const [bookings, setBookings] = useState([])
 
-    const url = `http://localhost:5000/booking?email=${user?.email}`
-
+    const url = `http://localhost:5000/bookings?email=${user?.email}`
 
     useEffect(() => {
         fetch(url)
             .then(res => res.json())
             .then(data => setBookings(data))
-    }, [url])
+    }, [])
 
 
     const handleDelete = (id) =>{
@@ -40,7 +39,7 @@ const Bookings = () => {
 
     const handleBookingConfirm = (id) =>{
         fetch(`http://localhost:5000/bookings/${id}`,{
-            method:'PUT',
+            method:'PATCH',
             headers:{
                 'content-type' : 'application/json'
             },
@@ -49,12 +48,12 @@ const Bookings = () => {
         .then(res => res.json())
         .then(data =>{
             console.log(data)
-            if(data.modifiendCount> 0){
-                alert('Updated Successfully')
-                const remaining = bookings.filter(booking => booking._id !== booking)
-                const updated = bookings.find(booking => booking._id === id)
+            if(data.modifiedCount> 0){
+                // alert('Updated Successfully')
+                const remaining = bookings.filter(booking => booking._id !== id)
+                const updated = bookings.find(booking => booking._id == id)
                 updated.status = 'confirm'
-                const newBookings = [updated, ...remaining]
+                const newBookings = [...remaining, updated]
                 setBookings(newBookings)
             }
         })
@@ -64,14 +63,15 @@ const Bookings = () => {
     return (
         <div>
             <h1 className='text-5xl'>Your Bookings: {bookings.length}</h1><div className="overflow-x-auto">
-                <table className="table">
+                <table className="table overflow-x-auto">
                     {/* head */}
                     <thead>
                         <tr>
                             <th>
-                                <label>
+                                {/* <label>
                                     <input type="checkbox" className="checkbox" />
-                                </label>
+                                </label> */}
+                                Delete
                             </th>
                             <th>Image</th>
                             <th>Service</th>
