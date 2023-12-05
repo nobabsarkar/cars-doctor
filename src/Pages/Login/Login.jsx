@@ -1,10 +1,14 @@
-import React, { useContext } from 'react';
 import img from '../../assets/images/login/login.svg'
-import { Link } from 'react-router-dom';
-import { AuthContext } from '../../providers/AuthProvider';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
+// import React, { useContext } from 'react';
+// import { AuthContext } from '../../providers/AuthProvider';
 
 const Login = () => {
-    const {logIn}  = useContext(AuthContext)
+    // const { logIn } = useContext(AuthContext)
+    const {logIn} = useAuth()
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const handleLogin = (event) => {
         event.preventDefault()
@@ -12,14 +16,16 @@ const Login = () => {
         const email = form.email.value;
         const password = form.password.value
         console.log(email, password)
-        
+
         logIn(email, password)
-        .then((result)=>{
-            console.log(result.user)
-        })
-        .catch((error)=>{
-            console.log(error)
-        })
+            .then((result) => {
+                const loggedInUser = result.user;
+                console.log(loggedInUser)
+                navigate(location?.state ? location.state: '/')
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
 
